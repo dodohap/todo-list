@@ -1,0 +1,94 @@
+/* TODO STYLES */
+
+.todo-card-body {
+  width: 250px;
+  height: 250px;
+  padding: 20px;
+  border: 1px solid gray;
+  border-radius: 5px;
+}
+
+.todo-description {
+  font-size: 1.2rem;
+}
+
+.todo-card-description-element {
+  height: 210px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.todo-createdAt {
+  color: #888;
+}
+
+.todo-card-buttons {
+  text-align: center;
+}
+
+.todo-btn--set-status {
+  width: 100%;
+  background-color: #fff;
+  border: 1px solid red;
+  border-radius: 25px;
+  color: red;
+  padding: 10px 0;
+  cursor: pointer;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.todo-btn--set-status:hover {
+  background-color: red;
+  color: #fff;
+}
+
+/* ADD-TODO STYLES */
+
+.add-todo-card-body {
+  width: 250px;
+  height: 250px;
+  padding: 20px;
+  border: 1px solid gray;
+  border-radius: 5px;
+}
+
+.add-todo-description {
+  font-size: 1.5rem;
+}
+
+.add-todo-card-description-element {
+  height: 210px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.add-todo-createdAt {
+  color: gray;
+}
+
+.add-todo-card-buttons {
+  text-align: center;
+}
+
+.add-todo--btn--add-todo {
+  width: 12rem;
+  background-color: #fff;
+  border: 1px solid red;
+  border-radius: 40px;
+  color: red;
+  padding: 10px;
+}
+
+.add-todo-status-options {
+  position: absolute;
+  background-color: #fff;
+  border: 1px solid black;
+  border-bottom: none;
+  text-align: center;
+}
+
+.add-todo-status-options > * {
+  border-bottom: 1px solid black;
+}

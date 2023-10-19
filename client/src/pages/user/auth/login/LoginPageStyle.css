@@ -1,0 +1,36 @@
+.login-container {
+    height: 800px;
+}
+
+.login-welcome-message {
+    text-align: center;
+}
+
+.login-container-content > * {
+    margin: 10px;
+}
+
+.login-form {
+    flex-direction: column;
+}
+
+.login-form > * {
+    margin: 10px;
+}
+
+.login-form-error {
+    color: red;
+}
+
+.login-form input {
+    border: none;
+    border-bottom: 2px solid black;
+}
+
+.login-submit-button {
+    width: 40%;
+    padding: 4px;
+    background-color: white;
+    border: 2px solid black;
+}
+

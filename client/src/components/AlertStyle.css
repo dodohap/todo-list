@@ -1,0 +1,26 @@
+.alert {
+  position: fixed;
+  margin: 20px;
+  border-radius: 20px;
+  bottom: 0;
+  padding: 2rem;
+}
+
+.alert-succes {
+  border: 2px solid green;
+  color: green;
+}
+
+.alert-error {
+  border: 2px solid red;
+  color: red;
+}
+
+.alert-title {
+  text-align: center;
+  font-size: 2rem;
+}
+
+.alert-message {
+  font-size: 20px;
+}
