@@ -7,7 +7,7 @@ export const errorCatcher = (
   res: Response,
   next: NextFunction
 ) => {
-  console.log(error);
+  console.log(error + ", " + "Request path: " + req.path);
 
   let errorMessage = "Something went wrong!";
   let errorStatus = 500;

@@ -1,8 +1,7 @@
-import { App } from './app';
-import { ToDoRoute } from './routes/todo.route';
-import { AuthRout } from './routes/auth.route';
-import { UserRoute } from './routes/user.route';
+import { App } from "./app";
+import { ToDoRoute } from "./routes/todo.route";
+import { AuthRout } from "./routes/auth.route";
 
-const app = new App([new ToDoRoute(), new UserRoute(), new AuthRout()]);
+const app = new App([new ToDoRoute(), new AuthRout()]);
 
 app.listen();

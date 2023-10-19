@@ -7,8 +7,8 @@ export default function LoginPage() {
     <div className="flex-center-container login-container">
       <div className="flex-row login-container-content">
         <div className="login-welcome-message">
-          <h1>Zaloguj sie wypelniajac</h1>
-          <h1>formularz</h1>
+          <h1>Zaloguj się, wypełniając</h1>
+          <h1>formularz:</h1>
         </div>
 
         <LoginForm />

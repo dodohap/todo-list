@@ -1,20 +1,20 @@
 .home-container {
-    height: 800px;
-    text-align: center;
+  height: 800px;
+  text-align: center;
 }
 
 .home-options {
-    display: flex;
-    flex-direction: column;
-    font-size: 20px;
-    color: black;
-    gap: 2px;
+  display: flex;
+  flex-direction: column;
+  font-size: 20px;
+  color: black;
+  gap: 2px;
 }
 
 .home-options > * {
-    border: black solid 2px;
+  border: black solid 2px;
 }
 
 a {
-    color: black;
+  color: black;
 }

@@ -1,11 +1,15 @@
+import {
+  API_RESPONSE_STATUS,
+  ApiResponseType,
+  UserType,
+} from "../../typesAndEnums";
 import api from "./api";
-import { ApiResponse } from "../../types/ApiTypes";
 
 export const signInApi = async (
   userName: string,
   email: string,
   password: string
-): Promise<ApiResponse> => {
+): Promise<ApiResponseType<UserType>> => {
   try {
     const res = await api.post(
       "auth/signup",
@@ -21,11 +25,11 @@ export const signInApi = async (
       }
     );
 
-    return { status: "succes", res: res.data };
+    return { status: API_RESPONSE_STATUS.SUCCESS, data: res.data };
   } catch (err: any) {
     return {
-      status: "error",
-      message: err.response?.data?.error || "Bład serwera",
+      status: API_RESPONSE_STATUS.ERROR,
+      errorMessage: err.response?.data?.error || "Bład serwera",
     };
   }
 };
@@ -33,7 +37,7 @@ export const signInApi = async (
 export const logInApi = async (
   userName: string,
   password: string
-): Promise<ApiResponse> => {
+): Promise<ApiResponseType<UserType>> => {
   try {
     const res = await api.post(
       "auth/login",
@@ -48,16 +52,18 @@ export const logInApi = async (
       }
     );
 
-    return { status: "succes", res: res.data };
+    return { status: API_RESPONSE_STATUS.SUCCESS, data: res.data.data };
   } catch (err: any) {
     return {
-      status: "error",
-      message: err.response?.data?.error || "Błąd serwera",
+      status: API_RESPONSE_STATUS.ERROR,
+      errorMessage: err.response?.data?.error || "Błąd serwera",
     };
   }
 };
 
-export const logOutApi = async (userId: number): Promise<ApiResponse> => {
+export const logOutApi = async (
+  userId: number
+): Promise<ApiResponseType<UserType>> => {
   try {
     const res = await api.post(
       "auth/logout",
@@ -71,11 +77,11 @@ export const logOutApi = async (userId: number): Promise<ApiResponse> => {
       }
     );
 
-    return { status: "succes", res: res.data };
+    return { status: API_RESPONSE_STATUS.SUCCESS, data: res.data };
   } catch (err: any) {
     return {
-      status: "error",
-      message: err.response?.data?.error || "Błąd serwera",
+      status: API_RESPONSE_STATUS.ERROR,
+      errorMessage: err.response?.data?.error || "Błąd serwera",
     };
   }
 };

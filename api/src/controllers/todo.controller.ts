@@ -65,4 +65,21 @@ export class ToDoController {
       next(err);
     }
   };
+
+  public getUserTodoList = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> => {
+    try {
+      const userId: number = Number(req.body.id);
+      const userTodoList: ITodo[] = await this.todoService.getUserTodoList(
+        userId
+      );
+
+      res.status(200).json({ data: userTodoList, message: "updateUser" });
+    } catch (err) {
+      next(err);
+    }
+  };
 }

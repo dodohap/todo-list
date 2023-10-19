@@ -1,14 +1,14 @@
 import {
-  IsString,
   IsDefined,
+  IsEmail,
   IsNotEmpty,
+  IsNumber,
+  IsString,
   MaxLength,
   MinLength,
-  IsEmail,
-  IsNumber,
 } from "class-validator";
 
-export class CreateUserDto {
+export class AuthSignUpDto {
   @IsNotEmpty()
   @IsString()
   @IsDefined()
@@ -23,21 +23,26 @@ export class CreateUserDto {
   @IsNotEmpty()
   @IsString()
   @IsDefined()
-  @MaxLength(32)
   password: string;
 }
 
-export class UpdateUserDto {
+export class AuthLogInDto {
   @IsNotEmpty()
   @IsString()
   @IsDefined()
-  @MaxLength(32)
+  @MinLength(3)
+  @MaxLength(16)
+  userName: string;
+
+  @IsNotEmpty()
+  @IsString()
+  @IsDefined()
   password: string;
 }
 
-export class UserTodoListDto {
-  @IsNotEmpty()
-  @IsNumber()
+export class AuthLogOutDto {
   @IsDefined()
-  id: number;
+  @IsNumber()
+  @IsNotEmpty()
+  userId: number;
 }

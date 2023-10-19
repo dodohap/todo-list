@@ -1,14 +1,18 @@
+import {
+  API_RESPONSE_STATUS,
+  ApiResponseType,
+  TodoType,
+  UserType,
+} from "../../typesAndEnums";
 import api from "./api";
-import { ApiResponse } from "../../types/ApiTypes";
-import { UserType } from "../../types/UserType";
-import { TodoType } from "../../types/TodoType";
 
 export const addTodoApi = async (
   user: UserType,
   description: string,
   status: string
-): Promise<ApiResponse> => {
-  if (user === null) return { status: "error", message: "User is null!" };
+): Promise<ApiResponseType<TodoType>> => {
+  if (!user)
+    return { status: API_RESPONSE_STATUS.ERROR, errorMessage: "User is null!" };
 
   try {
     const res = await api.post(
@@ -25,16 +29,18 @@ export const addTodoApi = async (
       }
     );
 
-    return { status: "succes", res: res.data };
+    return { status: API_RESPONSE_STATUS.SUCCESS, data: res.data.data };
   } catch (err: any) {
     return {
-      status: "error",
-      message: err.response?.data?.error || "Błąd serwera",
+      status: API_RESPONSE_STATUS.ERROR,
+      errorMessage: err.response?.data?.error || "Błąd serwera",
     };
   }
 };
 
-export const deleteTodoApi = async (todoId: number): Promise<ApiResponse> => {
+export const deleteTodoApi = async (
+  todoId: number
+): Promise<ApiResponseType<TodoType>> => {
   try {
     const res = await api.delete("todo/delete/" + todoId, {
       headers: {
@@ -42,18 +48,18 @@ export const deleteTodoApi = async (todoId: number): Promise<ApiResponse> => {
       },
     });
 
-    return { status: "succes", res: res.data };
+    return { status: API_RESPONSE_STATUS.SUCCESS, data: res.data.data };
   } catch (err: any) {
     return {
-      status: "error",
-      message: err.response?.data?.error || "Błąd serwera",
+      status: API_RESPONSE_STATUS.ERROR,
+      errorMessage: err.response?.data?.error || "Błąd serwera",
     };
   }
 };
 
 export const updateTodoApi = async (
   todoData: TodoType
-): Promise<ApiResponse> => {
+): Promise<ApiResponseType<TodoType>> => {
   try {
     const res = await api.put(
       "todo/update",
@@ -66,23 +72,24 @@ export const updateTodoApi = async (
         },
       }
     );
-    return { status: "succes", res: res.data };
+    return { status: API_RESPONSE_STATUS.SUCCESS, data: res.data.data };
   } catch (err: any) {
     return {
-      status: "error",
-      message: err.response?.data?.error || "Błąd serwera",
+      status: API_RESPONSE_STATUS.ERROR,
+      errorMessage: err.response?.data?.error || "Błąd serwera",
     };
   }
 };
 
 export const getUserTodoListApi = async (
   user: UserType
-): Promise<ApiResponse> => {
-  if (user === null) return { status: "error", message: "User is null!" };
+): Promise<ApiResponseType<TodoType[]>> => {
+  if (!user)
+    return { status: API_RESPONSE_STATUS.ERROR, errorMessage: "User is null!" };
 
   try {
     const res = await api.post(
-      "user/todolist/" + user.id,
+      "todo/list/user",
       JSON.stringify({
         id: user.id,
       }),
@@ -92,11 +99,12 @@ export const getUserTodoListApi = async (
         },
       }
     );
-    return { status: "succes", res: res.data };
+
+    return { status: API_RESPONSE_STATUS.SUCCESS, data: res.data.data };
   } catch (err: any) {
     return {
-      status: "error",
-      message: err.response?.data?.error || "Błąd serwera",
+      status: API_RESPONSE_STATUS.ERROR,
+      errorMessage: err.response?.data?.error || "Błąd serwera",
     };
   }
 };

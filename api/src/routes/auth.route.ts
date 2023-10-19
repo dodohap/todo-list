@@ -2,17 +2,8 @@ import { Router } from "express";
 import { IRoutes } from "../interfaces/routes.interface";
 import { AuthController } from "../controllers/auth.controller";
 import { ValidationMiddleware } from "../middlewares/validation.middlerware";
-import { CreateUserDto } from "../dto/user.dto";
 import { AuthMiddleware } from "../middlewares/auth.middlerware";
-import {
-  IsDefined,
-  IsEmail,
-  IsEmpty,
-  IsNotEmpty,
-  IsString,
-  MaxLength,
-  MinLength,
-} from "class-validator";
+import { AuthLogInDto, AuthLogOutDto, AuthSignUpDto } from "../dto/auth.dto";
 
 export class AuthRout implements IRoutes {
   public path = "/auth";
@@ -33,39 +24,8 @@ export class AuthRout implements IRoutes {
     this.router.post(
       `${this.path}/logout`,
       AuthMiddleware,
+      ValidationMiddleware(AuthLogOutDto),
       this.authController.logOut
     );
   }
-}
-
-class AuthSignUpDto {
-  @IsNotEmpty()
-  @IsString()
-  @IsDefined()
-  @MinLength(3)
-  @MaxLength(16)
-  userName: string;
-
-  @IsNotEmpty()
-  @IsEmail()
-  email: string;
-
-  @IsNotEmpty()
-  @IsString()
-  @IsDefined()
-  password: string;
-}
-
-class AuthLogInDto {
-  @IsNotEmpty()
-  @IsString()
-  @IsDefined()
-  @MinLength(3)
-  @MaxLength(16)
-  userName: string;
-
-  @IsNotEmpty()
-  @IsString()
-  @IsDefined()
-  password: string;
 }

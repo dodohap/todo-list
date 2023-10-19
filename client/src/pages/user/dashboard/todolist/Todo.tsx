@@ -1,45 +1,14 @@
-import { TodoType } from "../../../../types/TodoType";
-import { updateTodoApi, deleteTodoApi } from "../../../../services/api/todoApi";
-import { TODO_STATUS, statusMap } from "../../../../utils/todoStatusUtil";
+import { TodoType } from "../../../../typesAndEnums";
+import { statusMap } from "../../../../utils/todoStatusUtil";
 
 export default function Todo({
   todo,
   updateTodoList,
-  removeTodo,
 }: {
   todo: TodoType;
-  updateTodoList: any;
-  removeTodo: any;
+  updateTodoList: (todo: TodoType) => void;
 }) {
-  const { statusColor, statusButtonText, nextStatus } = statusMap[todo.status];
-
-  const updateTodoStatus = async () => {
-    if (todo.status === TODO_STATUS.DONE) {
-      const deleteRes = await deleteTodoApi(todo.id);
-      if (deleteRes.status === "succes") {
-        removeTodo(deleteRes.res.data);
-      }
-
-      return;
-    }
-
-    if (!nextStatus) return;
-
-    const res = await updateTodoApi({
-      status: nextStatus,
-      createdAt: todo.createdAt,
-      description: todo.description,
-      id: todo.id,
-      userId: todo.userId,
-    });
-
-    if (res.status === "error") {
-      console.log(res.message);
-      return;
-    }
-
-    updateTodoList(res.res.data);
-  };
+  const { statusColor, statusButtonText } = statusMap[todo.status];
 
   return (
     <div className="todo-card-body">
@@ -56,7 +25,7 @@ export default function Todo({
           <div className="todo-card-buttons">
             <button
               className="todo-btn--set-status"
-              onClick={() => updateTodoStatus()}
+              onClick={() => updateTodoList(todo)}
             >
               {statusButtonText}
             </button>

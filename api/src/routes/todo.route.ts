@@ -4,6 +4,7 @@ import { ToDoController } from "../controllers/todo.controller";
 import { ValidationMiddleware } from "../middlewares/validation.middlerware";
 import { CreateTodoDto, TodoDto } from "../dto/todo.dto";
 import { AuthMiddleware } from "../middlewares/auth.middlerware";
+import { UserTodoListDto } from "../dto/user.dto";
 
 export class ToDoRoute implements IRoutes {
   public path = "/todo";
@@ -36,6 +37,12 @@ export class ToDoRoute implements IRoutes {
       AuthMiddleware,
       ValidationMiddleware(TodoDto),
       this.todoController.updateTodo
+    );
+    this.router.post(
+      `${this.path}/list/user`,
+      AuthMiddleware,
+      ValidationMiddleware(UserTodoListDto),
+      this.todoController.getUserTodoList
     );
   }
 }

@@ -1,63 +1,101 @@
 import { useEffect, useState } from "react";
 import { useUserStorage } from "../../../../hooks/useUserStorage";
-import { TodoType } from "../../../../types/TodoType";
-import { getUserTodoListApi } from "../../../../services/api/todoApi";
-import { Alert } from "../../../../components/Alert";
+import {
+  addTodoApi,
+  deleteTodoApi,
+  getUserTodoListApi,
+  updateTodoApi,
+} from "../../../../services/api/todoApi";
 import AddTodo from "./AddTodo";
 import Todo from "./Todo";
-
 import "./TodoListStyle.css";
+import {
+  ALERT_TYPE,
+  API_RESPONSE_STATUS,
+  ApiResponseType,
+  TODO_STATUS,
+  TodoType,
+} from "../../../../typesAndEnums";
+import { useAlert } from "../../../AlertContext";
+import { statusMap } from "../../../../utils/todoStatusUtil";
 
 export default function TodoList() {
   const { user } = useUserStorage();
-
+  const { setAlert } = useAlert();
   const [todos, setTodos] = useState<TodoType[]>([]);
-  const [alert, setAlertState] = useState<alertType>({
-    type: "off",
-    message: "",
-  });
 
-  const setAlert = (type: "succes" | "error", message: string) => {
-    if (alert.type === type) return;
-    setAlertState((prev) => ({
-      type,
-      message,
-    }));
+  const addTodo = async (description: string, status: TODO_STATUS) => {
+    const apiResponse: ApiResponseType<TodoType> = await addTodoApi(
+      user,
+      description,
+      status
+    );
 
-    setTimeout(() => {
-      setAlertState({ type: "off", message: "" });
-    }, 4000);
-  };
+    if (apiResponse.status === API_RESPONSE_STATUS.SUCCESS) {
+      let newTodo: TodoType = apiResponse.data;
+      if (!newTodo) {
+        setAlert(ALERT_TYPE.ERROR, "Nie udalo się dodać nowego zadania!");
+        throw new Error("New todo is: " + newTodo);
+      }
 
-  const addTodo = (newTodo: TodoType): void => {
-    console.log(newTodo);
-    if (!newTodo) {
-      console.log("New todo is " + newTodo);
+      setTodos((prevTodos) => [...prevTodos, newTodo]);
+      setAlert(ALERT_TYPE.SUCCESS, "Dodałeś nowe zadanie!");
       return;
     }
 
-    setTodos((prevTodos) => [...prevTodos, newTodo]);
+    if (apiResponse.status === API_RESPONSE_STATUS.ERROR) {
+      setAlert(ALERT_TYPE.ERROR, "Nie udalo się dodać nowego zadania!");
+      throw new Error(apiResponse.errorMessage);
+    }
   };
 
-  const updateTodoList = (updatedTodo: TodoType) => {
-    const updatedTodos = todos.map((todo) =>
-      todo.id === updatedTodo.id ? updatedTodo : todo
-    );
+  const updateTodoList = async (todo: TodoType) => {
+    if (todo.status === TODO_STATUS.DONE) {
+      const apiResponse: ApiResponseType<TodoType> = await deleteTodoApi(
+        todo.id
+      );
+      if (apiResponse.status === API_RESPONSE_STATUS.ERROR) {
+        setAlert(ALERT_TYPE.ERROR, "Nie udało się usunąć zadania!");
+        throw new Error(apiResponse.errorMessage);
+      }
+      setTodos((currentTodos) => {
+        return currentTodos.filter((todo) => todo.id !== apiResponse.data.id);
+      });
+      setAlert(ALERT_TYPE.SUCCESS, "Usunąłeś zadanie!");
+      return;
+    }
+    const { nextStatus } = statusMap[todo.status];
+    if (!nextStatus) return;
 
-    setTodos(updatedTodos);
-  };
-
-  const removeTodo = (removedTodo: TodoType) => {
-    setTodos((currentTodos) => {
-      return currentTodos.filter((todo) => todo.id !== removedTodo.id);
+    const apiResponse: ApiResponseType<TodoType> = await updateTodoApi({
+      status: TODO_STATUS.DONE,
+      createdAt: todo.createdAt,
+      description: todo.description,
+      id: todo.id,
+      userId: todo.userId,
     });
+
+    if (apiResponse.status === API_RESPONSE_STATUS.ERROR) {
+      setAlert(ALERT_TYPE.ERROR, "Nie udało się zaaktualizować zadania!");
+      throw new Error(apiResponse.errorMessage);
+    }
+    const updatedTodos = todos.map((todo) =>
+      todo.id === apiResponse.data.id ? apiResponse.data : todo
+    );
+    setTodos(updatedTodos);
+    setAlert(ALERT_TYPE.SUCCESS, "Zaaktualizowałeś zadanie!");
   };
 
   const getUserTodo = async () => {
-    const res = await getUserTodoListApi(user);
-    if (res.status === "succes") {
-      setTodos(res.res.data);
+    const apiResponse: ApiResponseType<TodoType[]> = await getUserTodoListApi(
+      user
+    );
+
+    if (apiResponse.status === API_RESPONSE_STATUS.SUCCESS) {
+      setTodos(apiResponse.data);
     }
+
+    //set error alert
   };
 
   useEffect(() => {
@@ -67,24 +105,13 @@ export default function TodoList() {
   return (
     <>
       <div className="todo-list">
-        {todos.map((todo) => (
-          <Todo
-            key={todo.id}
-            todo={todo}
-            updateTodoList={updateTodoList}
-            removeTodo={removeTodo}
-          />
-        ))}
+        {todos &&
+          todos.map((todo) => (
+            <Todo key={todo.id} todo={todo} updateTodoList={updateTodoList} />
+          ))}
 
-        <AddTodo addTodo={addTodo} setAlert={setAlert} />
+        <AddTodo addTodo={addTodo} />
       </div>
-      {
-        <Alert
-          type={alert.type}
-          message={alert.message}
-          show={alert.type !== "off"}
-        />
-      }
     </>
   );
 }

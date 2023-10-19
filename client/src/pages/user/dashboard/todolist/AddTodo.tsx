@@ -1,16 +1,17 @@
 import { useState } from "react";
-import { useUserStorage } from "../../../../hooks/useUserStorage";
-import { TODO_STATUS, statusMap } from "../../../../utils/todoStatusUtil";
+import { statusMap } from "../../../../utils/todoStatusUtil";
 import { validateAddTodoForm } from "../../../../utils/validator";
-import { TodoType } from "../../../../types/TodoType";
-import { addTodoApi } from "../../../../services/api/todoApi";
+import {
+  ALERT_TYPE,
+  AddTodoFormType,
+  TODO_STATUS,
+} from "../../../../typesAndEnums";
+import { useAlert } from "../../../AlertContext";
 
 export default function AddTodo({
   addTodo,
-  setAlert,
 }: {
-  addTodo: (newTodo: TodoType) => void;
-  setAlert: (type: "succes" | "error", message: string) => void;
+  addTodo: (description: string, status: TODO_STATUS) => void;
 }) {
   const [formState, setFormState] = useState<AddTodoFormType>({
     status: TODO_STATUS.TODO,
@@ -18,9 +19,8 @@ export default function AddTodo({
     errorMessage: "",
   });
 
+  const { setAlert } = useAlert();
   const [selectStatusOn, setSelectStatusOn] = useState<boolean>(false);
-
-  const { user } = useUserStorage();
 
   const { statusColor } = statusMap[formState.status];
 
@@ -32,7 +32,7 @@ export default function AddTodo({
   };
 
   const setErrorMessage = (errorMessage: string) => {
-    setAlert("error", errorMessage);
+    setAlert(ALERT_TYPE.ERROR, errorMessage);
     setFormState((prevState) => ({
       ...prevState,
       errorMessage: errorMessage,
@@ -48,20 +48,7 @@ export default function AddTodo({
       return;
     }
 
-    const res = await addTodoApi(user, formState.description, formState.status);
-    if (res.status === "error") {
-      setErrorMessage(res.message);
-      return;
-    } else if (res.status === "succes") {
-      let newTodo: TodoType = res.res.data;
-      if (!newTodo) {
-        console.log("NewTodo is " + newTodo);
-        return;
-      }
-
-      addTodo(newTodo);
-      setAlert("succes", "Dodano nowe zadanie!");
-    }
+    addTodo(formState.description, formState.status);
   };
 
   return (

@@ -1,23 +1,31 @@
 import { MouseEvent, useState } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
 import { useUserStorage } from "../../../../hooks/useUserStorage";
-import { ApiResponse } from "../../../../types/ApiTypes";
 import { logInApi } from "../../../../services/api/authApi";
 import { validateLoginForm } from "../../../../utils/validator";
+import { useAlert } from "../../../AlertContext";
+import {
+  ALERT_TYPE,
+  API_RESPONSE_STATUS,
+  ApiResponseType,
+  LogInFormType,
+  UserType,
+} from "../../../../typesAndEnums";
 
 export default function LoginForm() {
   const navigate = useNavigate();
+  const { setAlert } = useAlert();
   const { setUser, user } = useUserStorage();
 
-  const [formState, setFormState] = useState<LoginFormType>({
+  const [formState, setFormState] = useState<LogInFormType>({
     userName: "",
     password: "",
     errorMessage: "",
   });
 
   const setErrorMessage = (errorMessage: string) => {
-    setFormState((prevStatus) => ({
-      ...prevStatus,
+    setFormState((prevState) => ({
+      ...prevState,
       errorMessage: errorMessage,
     }));
   };
@@ -31,17 +39,22 @@ export default function LoginForm() {
       return;
     }
 
-    const res: ApiResponse = await logInApi(
+    const apiResponse: ApiResponseType<UserType> = await logInApi(
       formState.userName,
       formState.password
     );
 
-    if (res.status === "succes") {
-      setUser(res.res.data);
+    if (apiResponse.status === API_RESPONSE_STATUS.SUCCESS) {
+      setUser(apiResponse.data);
+      setAlert(ALERT_TYPE.SUCCESS, [
+        "Zalogowałeś się!",
+        "Ostatnie logowanie: " + apiResponse.data?.lastLogin,
+      ]);
       navigate("/user/dashboard");
-    } else if (res.status === "error") {
-      setErrorMessage(res.message);
+      return;
     }
+
+    setErrorMessage(apiResponse.errorMessage);
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {

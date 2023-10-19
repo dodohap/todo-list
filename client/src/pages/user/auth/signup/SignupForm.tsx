@@ -1,10 +1,18 @@
 import { useState } from "react";
 import { validateSignUpForm } from "../../../../utils/validator";
 import { useNavigate } from "react-router-dom";
-import { ApiResponse } from "../../../../types/ApiTypes";
 import { signInApi } from "../../../../services/api/authApi";
+import { useAlert } from "../../../AlertContext";
+import {
+  ALERT_TYPE,
+  API_RESPONSE_STATUS,
+  ApiResponseType,
+  SignUpFormType,
+  UserType,
+} from "../../../../typesAndEnums";
 
 export default function SignupForm() {
+  const { setAlert } = useAlert();
   const navigate = useNavigate();
 
   const [formState, setFormState] = useState<SignUpFormType>({
@@ -40,19 +48,20 @@ export default function SignupForm() {
       return;
     }
 
-    const res: ApiResponse = await signInApi(
+    const apiResponse: ApiResponseType<UserType> = await signInApi(
       formState.userName,
       formState.email,
       formState.password
     );
-    if (res.status === "succes") {
+
+    if (apiResponse.status === API_RESPONSE_STATUS.SUCCESS) {
       navigate("/auth/login");
+      setAlert(ALERT_TYPE.SUCCESS, "Utworzyłeś konto, teraz się zaloguj!");
       return;
     }
 
-    if (res.status === "error") {
-      setErrorMessage(res.message);
-    }
+    if (apiResponse.status === API_RESPONSE_STATUS.ERROR)
+      setErrorMessage(apiResponse.errorMessage);
   };
 
   return (

@@ -13,10 +13,10 @@ export default function HomePage() {
         <h1>Witaj!</h1>
         <div className="home-options">
           <p>
-            <Link to={"/auth/login"}>Kliknij, aby sie zalogowac!</Link>
+            <Link to={"/auth/login"}>Kliknij, aby się zalogować!</Link>
           </p>
           <p>
-            <Link to={"/auth/signup"}>Klknij, aby sie zarejestrowac!</Link>
+            <Link to={"/auth/signup"}>Kliknij, aby się zarejestrować!</Link>
           </p>
         </div>
       </div>

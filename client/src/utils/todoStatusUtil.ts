@@ -1,17 +1,13 @@
-export enum TODO_STATUS {
-  DONE = "ZROBIONE",
-  INPROGRESS = "W TRAKCIE",
-  TODO = "DO ZROBIENIA",
-}
+import { TODO_STATUS } from "../typesAndEnums";
 
 export const statusMap: Record<
   string,
-  { statusColor: string; statusButtonText: string; nextStatus: string }
+  { statusColor: string; statusButtonText: string; nextStatus: TODO_STATUS }
 > = {
   [TODO_STATUS.DONE]: {
     statusColor: "green",
     statusButtonText: "Usun",
-    nextStatus: "",
+    nextStatus: TODO_STATUS.TODO,
   },
   [TODO_STATUS.INPROGRESS]: {
     statusColor: "darkgoldenrod",

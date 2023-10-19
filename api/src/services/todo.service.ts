@@ -51,4 +51,8 @@ export class TodoService {
 
     return todo;
   }
+
+  public getUserTodoList = async (userId: number): Promise<ITodo[]> => {
+    return await databaseTodoTabel().where("userId", "=", Number(userId));
+  };
 }

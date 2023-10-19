@@ -13,7 +13,7 @@ export const AuthMiddleware = async (
     const userId = req.cookies["USER_ID"];
 
     const findUser: IUser = await databaseUsersTabel()
-      .where("id", "=", userId)
+      .where("id", "=", Number(userId))
       .first();
 
     if (!findUser) throw new HttpException(409, "Cannot find user!");
