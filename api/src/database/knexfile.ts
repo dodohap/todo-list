@@ -1,12 +1,18 @@
 import { Knex } from "knex";
-import { DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_DATABASE } from '../config/index';
+import {
+  DB_HOST,
+  DB_PORT,
+  DB_USER,
+  DB_PASSWORD,
+  DB_DATABASE,
+} from "../config/index";
 // Update with your config settings.
 
 const configs: { [key: string]: Knex.Config } = {
   development: {
-    client: 'mysql2',
+    client: "mysql2",
     connection: {
-      charset: 'utf8',
+      charset: "utf8",
       user: "root",
       password: "password",
       host: "localhost",
@@ -14,10 +20,14 @@ const configs: { [key: string]: Knex.Config } = {
       database: "todoapp",
     },
     migrations: {
-      directory: './migrations',
-      tableName: 'migrations',
+      directory: "./migrations",
+      tableName: "migrations",
     },
-  }
+    pool: {
+      min: 1,
+      max: 2,
+    },
+  },
 };
 
 export default configs;

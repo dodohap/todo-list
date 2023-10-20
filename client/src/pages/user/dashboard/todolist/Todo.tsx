@@ -24,7 +24,7 @@ export default function Todo({
 
           <div className="todo-card-buttons">
             <button
-              className="todo-btn--set-status"
+              className="todo-btn-set-status"
               onClick={() => updateTodoList(todo)}
             >
               {statusButtonText}

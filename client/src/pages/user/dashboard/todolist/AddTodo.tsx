@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { statusMap } from "../../../../utils/todoStatusUtil";
 import { validateAddTodoForm } from "../../../../utils/validator";
 import {
@@ -49,7 +49,25 @@ export default function AddTodo({
     }
 
     addTodo(formState.description, formState.status);
+    changeFormState("description", "");
   };
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (selectStatusOn) {
+        const target = event.target as HTMLElement;
+        if (target && target.closest(".add-todo-select-status") === null) {
+          setSelectStatusOn(false);
+        }
+      }
+    };
+
+    window.addEventListener("click", handleClickOutside);
+
+    return () => {
+      window.removeEventListener("click", handleClickOutside);
+    };
+  }, [selectStatusOn]);
 
   return (
     <>
@@ -58,19 +76,19 @@ export default function AddTodo({
           <div className="add-todo-card-description-element">
             <div>
               <div
-                className="add-todo--select-status"
+                className="add-todo-select-status"
                 onClick={() => setSelectStatusOn((prev) => !prev)}
               >
                 <p style={{ color: statusColor }}>{formState.status} (zmien)</p>
                 <div
-                  className="add-todo--status-options"
+                  className="add-todo-status-options"
                   defaultValue={TODO_STATUS.TODO}
                 >
                   {selectStatusOn && (
                     <>
                       {Object.values(TODO_STATUS).map((value, index) => (
                         <div
-                          style={{ color: statusColor }}
+                          style={{ color: statusMap[value].statusColor }}
                           key={index}
                           onClick={() => changeFormState("status", value)}
                         >
@@ -88,12 +106,13 @@ export default function AddTodo({
                 rows={4}
                 maxLength={40}
                 onChange={(e) => changeFormState(e.target.name, e.target.value)}
+                value={formState.description}
               ></textarea>
             </div>
 
             <div className="add-todo-card-buttons">
               <button
-                className="add-todo--btn--add-todo"
+                className="add-todo-btn-add-todo"
                 onClick={(e) => submitForm(e)}
               >
                 Dodaj

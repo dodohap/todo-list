@@ -51,5 +51,9 @@ export class App {
     });
 
     this.app.use(errorCatcher);
+
+    this.app.on("exit", (code) => {
+      console.log(code);
+    });
   }
 }

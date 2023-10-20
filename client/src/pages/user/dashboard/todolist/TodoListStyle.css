@@ -27,7 +27,7 @@
   text-align: center;
 }
 
-.todo-btn--set-status {
+.todo-btn-set-status {
   width: 100%;
   background-color: #fff;
   border: 1px solid red;
@@ -38,7 +38,7 @@
   transition: background-color 0.2s, color 0.2s;
 }
 
-.todo-btn--set-status:hover {
+.todo-btn-set-status:hover {
   background-color: red;
   color: #fff;
 }
@@ -72,7 +72,7 @@
   text-align: center;
 }
 
-.add-todo--btn--add-todo {
+.add-todo-btn-add-todo {
   width: 12rem;
   background-color: #fff;
   border: 1px solid red;

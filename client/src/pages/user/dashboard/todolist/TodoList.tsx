@@ -18,6 +18,7 @@ import {
 } from "../../../../typesAndEnums";
 import { useAlert } from "../../../AlertContext";
 import { statusMap } from "../../../../utils/todoStatusUtil";
+import { isTooManyUserRequest } from "../../../../services/api/userRequestManager";
 
 export default function TodoList() {
   const { user } = useUserStorage();
@@ -50,20 +51,32 @@ export default function TodoList() {
   };
 
   const updateTodoList = async (todo: TodoType) => {
+    if (isTooManyUserRequest(todo.userId)) {
+      setAlert(
+        ALERT_TYPE.ERROR,
+        "Wyslyasz za duzo zapytan do db! (todo in api)"
+      );
+      return;
+    }
+
     if (todo.status === TODO_STATUS.DONE) {
       const apiResponse: ApiResponseType<TodoType> = await deleteTodoApi(
         todo.id
       );
+
       if (apiResponse.status === API_RESPONSE_STATUS.ERROR) {
         setAlert(ALERT_TYPE.ERROR, "Nie udało się usunąć zadania!");
         throw new Error(apiResponse.errorMessage);
       }
+
       setTodos((currentTodos) => {
         return currentTodos.filter((todo) => todo.id !== apiResponse.data.id);
       });
+
       setAlert(ALERT_TYPE.SUCCESS, "Usunąłeś zadanie!");
       return;
     }
+
     const { nextStatus } = statusMap[todo.status];
     if (!nextStatus) return;
 
@@ -76,14 +89,16 @@ export default function TodoList() {
     });
 
     if (apiResponse.status === API_RESPONSE_STATUS.ERROR) {
-      setAlert(ALERT_TYPE.ERROR, "Nie udało się zaaktualizować zadania!");
+      setAlert(ALERT_TYPE.ERROR, "Nie udało się zaktualizować zadania!");
       throw new Error(apiResponse.errorMessage);
     }
+
     const updatedTodos = todos.map((todo) =>
       todo.id === apiResponse.data.id ? apiResponse.data : todo
     );
+
     setTodos(updatedTodos);
-    setAlert(ALERT_TYPE.SUCCESS, "Zaaktualizowałeś zadanie!");
+    setAlert(ALERT_TYPE.SUCCESS, "Zaktualizowałeś zadanie!");
   };
 
   const getUserTodo = async () => {
@@ -93,9 +108,10 @@ export default function TodoList() {
 
     if (apiResponse.status === API_RESPONSE_STATUS.SUCCESS) {
       setTodos(apiResponse.data);
+      return;
     }
 
-    //set error alert
+    setAlert(ALERT_TYPE.ERROR, "Nie udał się pobrać Twoich zadań (?)");
   };
 
   useEffect(() => {
